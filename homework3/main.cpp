@@ -79,5 +79,16 @@ int main()
     finish = GetTickCount64();
     printf("AsmSort: %lld\n", finish - start);
     Print(min(N, TestNum));
+    printf("-----------------------------------------------\n");
+    LoadData();
+    start = GetTickCount64();
+    CountAverage();
+    finish = GetTickCount64();
+    printf("CountAverage: %lld\n", finish - start);
+    start = GetTickCount64();
+    sort(s, s + N, [](student& x, student& y) {return x.average > y.average; });
+    finish = GetTickCount64();
+    printf("QuickSort: %lld\n", finish - start);
+    Print(min(N, TestNum));
     return 0;
 }

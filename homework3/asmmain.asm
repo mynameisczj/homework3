@@ -1,7 +1,7 @@
 ;edx是人数 N
 ;rsi 头指针
-AVERAGE_OFFSET = 36   ; short average（36-37）
-STRUCT_SIZE    = 38    ; 总大小 = 38
+AVERAGE_OFFSET = 36   ; key
+STRUCT_SIZE    = 38    ; 总大小  38
 .code
 PUBLIC AsmSortScores
 AsmSortScores PROC 
