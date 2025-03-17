@@ -3,14 +3,16 @@
 #include<random>
 #define N 100000
 #define TestNum 10
-#define _CRT_SECURE_NO_WARNINGS
 using namespace std;
+#pragma pack(push, 16) 
 struct student {
     char  name[8];
     char  sid[11];
     short  scores[8];
     short  average;
-}s[N];
+};
+#pragma pack(pop)
+student s[N];
 void LoadData()
 {
     FILE *fp;
@@ -75,7 +77,7 @@ int main()
     finish = GetTickCount64();
     printf("CountAverage: %lld\n", finish - start);
     start = GetTickCount64();
-    SortScores(s,N);
+    SortScores(s, N);
     finish = GetTickCount64();
     printf("QSort: %lld\n", finish - start);
     Print(min(N, TestNum));

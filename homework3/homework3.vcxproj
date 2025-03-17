@@ -25,7 +25,9 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <MASM Include="asmmain.asm" />
+    <MASM Include="asmmain.asm">
+      <IncludePaths Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(IncludePaths)</IncludePaths>
+    </MASM>
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>

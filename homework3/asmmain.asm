@@ -1,68 +1,58 @@
-; 定义结构体偏移量（严格匹配 C++ 代码）
-SNAME_OFFSET   = 0    ; char name[8]
-SID_OFFSET     = 8    ; char sid[11]
-SCORES_OFFSET  = 20   ; short scores[8]（20-35）
+
+;edx是人数 N
+;rsi 头指针
 AVERAGE_OFFSET = 36   ; short average（36-37）
 STRUCT_SIZE    = 38    ; 总大小 = 38
 
 .code
 PUBLIC AsmSortScores
-AsmSortScores PROC FRAME
+AsmSortScores PROC 
     push rsi
-    .PUSHREG rsi
     push rdi
-    .PUSHREG rdi
     push rbx
-    .PUSHREG rbx
-    .ENDPROLOG
 
-    mov rsi, rcx              
-    mov ecx, edx              
-    dec ecx                   
-
+    mov rsi, rcx ;头指针     
+    imul rdx, STRUCT_SIZE
+    lea rdi, [rsi + rdx] ;尾指针
+    mov rax, rsi;rax外层指针
 outer_loop:
-    mov rdi, rsi             
-    lea rbx, [rsi + STRUCT_SIZE] 
-    mov eax, ecx             
-
+    lea rbx,[rax+STRUCT_SIZE] ;rbx内层指针
 inner_loop:
-    
-    mov r8, rsi
-    mov r9, rdx
-    imul r9, STRUCT_SIZE
-    add r8, r9               
-    cmp rbx, r8
-    jge no_swap              
-    
-    mov dx, [rdi + AVERAGE_OFFSET]  ;part1
-    cmp dx, [rbx + AVERAGE_OFFSET] 
-    jge no_swap                     
-    
-    movups xmm0, xmmword ptr [rdi]      
-    movups xmm1, xmmword ptr [rdi+16]   
-    mov r8w, word ptr [rdi+32]          
-    mov r9d, dword ptr [rdi+34]         
-    
+    cmp rbx, rdi
+    jge end_inner
+ ;----------------------------------------
+ ;对比然后交换
+    mov dx, [rbx+AVERAGE_OFFSET]
+    cmp dx, [rax + AVERAGE_OFFSET] 
+    jge no_swap
+
+    movups xmm0, xmmword ptr [rax]     
+    movups xmm1, xmmword ptr [rax+16]  
+    mov r8w, word ptr [rax+32]  
+    mov r9d, dword ptr [rax+34]
+
     movups xmm2, xmmword ptr [rbx]
     movups xmm3, xmmword ptr [rbx+16]
     mov r10w, word ptr [rbx+32]
     mov r11d, dword ptr [rbx+34]
 
-    movups [rdi], xmm2
-    movups [rdi+16], xmm3
-    mov [rdi+32], r10w
-    mov [rdi+34], r11d
+    movups [rax], xmm2
+    movups [rax+16], xmm3
+    mov [rax+32], r10w
+    mov [rax+34], r11d
 
     movups [rbx], xmm0
     movups [rbx+16], xmm1
     mov [rbx+32], r8w
     mov [rbx+34], r9d
+;----------------------------------------
 no_swap:
-    add rdi, STRUCT_SIZE      
     add rbx, STRUCT_SIZE
-    dec eax
-    jnz inner_loop
-    loop outer_loop
+    jmp inner_loop
+end_inner:
+    add rax, STRUCT_SIZE
+    cmp rax,rdi
+    jb outer_loop
 exit:
     pop rbx
     pop rdi
