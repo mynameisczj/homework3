@@ -31,46 +31,38 @@ inner_loop:
     mov r9, rdx
     imul r9, STRUCT_SIZE
     add r8, r9               
-
     cmp rbx, r8
     jge no_swap              
-
     
-    mov dx, [rdi + AVERAGE_OFFSET]  
+    mov dx, [rdi + AVERAGE_OFFSET]  ;part1
     cmp dx, [rbx + AVERAGE_OFFSET] 
     jge no_swap                     
-
     
-    movdqu xmm0, xmmword ptr [rdi]      
-    movdqu xmm1, xmmword ptr [rdi+16]   
+    movups xmm0, xmmword ptr [rdi]      
+    movups xmm1, xmmword ptr [rdi+16]   
     mov r8w, word ptr [rdi+32]          
     mov r9d, dword ptr [rdi+34]         
-
     
-    movdqu xmm2, xmmword ptr [rbx]
-    movdqu xmm3, xmmword ptr [rbx+16]
+    movups xmm2, xmmword ptr [rbx]
+    movups xmm3, xmmword ptr [rbx+16]
     mov r10w, word ptr [rbx+32]
     mov r11d, dword ptr [rbx+34]
 
-
-    movdqu [rdi], xmm2
-    movdqu [rdi+16], xmm3
+    movups [rdi], xmm2
+    movups [rdi+16], xmm3
     mov [rdi+32], r10w
     mov [rdi+34], r11d
 
-    movdqu [rbx], xmm0
-    movdqu [rbx+16], xmm1
+    movups [rbx], xmm0
+    movups [rbx+16], xmm1
     mov [rbx+32], r8w
     mov [rbx+34], r9d
-
 no_swap:
     add rdi, STRUCT_SIZE      
     add rbx, STRUCT_SIZE
     dec eax
     jnz inner_loop
-
     loop outer_loop
-
 exit:
     pop rbx
     pop rdi
