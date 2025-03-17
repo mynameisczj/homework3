@@ -1,4 +1,3 @@
-
 ;edx是人数 N
 ;rsi 头指针
 AVERAGE_OFFSET = 36   ; short average（36-37）
@@ -22,8 +21,8 @@ inner_loop:
     jge end_inner
  ;----------------------------------------
  ;对比然后交换
-    mov dx, [rbx+AVERAGE_OFFSET]
-    cmp dx, [rax + AVERAGE_OFFSET] 
+    mov dx, [rax+AVERAGE_OFFSET]
+    cmp dx, [rbx + AVERAGE_OFFSET] 
     jge no_swap
 
     movups xmm0, xmmword ptr [rax]     

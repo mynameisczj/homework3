@@ -4,14 +4,12 @@
 #define N 100000
 #define TestNum 10
 using namespace std;
-#pragma pack(push, 16) 
 struct student {
     char  name[8];
     char  sid[11];
     short  scores[8];
     short  average;
 };
-#pragma pack(pop)
 student s[N];
 void LoadData()
 {
@@ -66,9 +64,9 @@ int main()
     finish= GetTickCount64();
     printf("CountAverage: %lld\n", finish - start);
     start = GetTickCount64();
-    AsmSortScores(s, N);
+    SortScores(s, N);
     finish = GetTickCount64();
-    printf("AsmSort: %lld\n", finish - start);
+    printf("Sort: %lld\n", finish - start);
     Print(min(N,TestNum));
     printf("-----------------------------------------------\n");
     LoadData();
@@ -77,9 +75,9 @@ int main()
     finish = GetTickCount64();
     printf("CountAverage: %lld\n", finish - start);
     start = GetTickCount64();
-    SortScores(s, N);
+    AsmSortScores(s, N);
     finish = GetTickCount64();
-    printf("QSort: %lld\n", finish - start);
+    printf("AsmSort: %lld\n", finish - start);
     Print(min(N, TestNum));
     return 0;
 }
