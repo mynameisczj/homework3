@@ -24,23 +24,19 @@ inner_loop:
     cmp dx, [rbx + AVERAGE_OFFSET] 
     jge no_swap
 
-    movups xmm0, xmmword ptr [rax]     
-    movups xmm1, xmmword ptr [rax+16]  
+    vmovups ymm0, ymmword ptr [rax]     
     mov r8w, word ptr [rax+32]  
     mov r9d, dword ptr [rax+34]
 
-    movups xmm2, xmmword ptr [rbx]
-    movups xmm3, xmmword ptr [rbx+16]
+    vmovups ymm1, ymmword ptr [rbx]
     mov r10w, word ptr [rbx+32]
     mov r11d, dword ptr [rbx+34]
 
-    movups [rax], xmm2
-    movups [rax+16], xmm3
+    vmovups [rax], ymm1
     mov [rax+32], r10w
     mov [rax+34], r11d
 
-    movups [rbx], xmm0
-    movups [rbx+16], xmm1
+    vmovups [rbx], ymm0
     mov [rbx+32], r8w
     mov [rbx+34], r9d
 ;----------------------------------------
