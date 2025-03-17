@@ -2,7 +2,6 @@
 ;rsi 头指针
 AVERAGE_OFFSET = 36   ; short average（36-37）
 STRUCT_SIZE    = 38    ; 总大小 = 38
-
 .code
 PUBLIC AsmSortScores
 AsmSortScores PROC 
@@ -10,18 +9,18 @@ AsmSortScores PROC
     push rdi
     push rbx
 
-    mov rsi, rcx ;头指针     
+    mov rsi, rcx                ;头指针     
     imul rdx, STRUCT_SIZE
-    lea rdi, [rsi + rdx] ;尾指针
-    mov rax, rsi;rax外层指针
+    lea rdi, [rsi + rdx]        ;尾指针
+    mov rax, rsi                ;rax外层指针
 outer_loop:
-    lea rbx,[rax+STRUCT_SIZE] ;rbx内层指针
+    lea rbx,[rax+STRUCT_SIZE]   ;rbx内层指针
 inner_loop:
     cmp rbx, rdi
     jge end_inner
  ;----------------------------------------
  ;对比然后交换
-    mov dx, [rax+AVERAGE_OFFSET]
+    mov dx, [rax + AVERAGE_OFFSET]
     cmp dx, [rbx + AVERAGE_OFFSET] 
     jge no_swap
 
