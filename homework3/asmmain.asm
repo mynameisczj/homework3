@@ -1,9 +1,12 @@
 ;edx是人数 N
 ;rsi 头指针
+Scores_OFFSET = 20   ;分数偏移
 AVERAGE_OFFSET = 36   ; key
 STRUCT_SIZE    = 38    ; 总大小  38
+
 .code
 PUBLIC AsmSortScores
+PUBLIC AsmCountAverage
 AsmSortScores PROC 
     push rsi
     push rdi
@@ -57,4 +60,43 @@ exit:
     pop rsi
     ret
 AsmSortScores ENDP
+
+AsmCountAverage PROC 
+    push rsi
+    push rdi
+    push rbx
+
+    mov rsi, rcx                ;头指针     
+    imul rdx, STRUCT_SIZE
+    lea rdi, [rsi + rdx]        ;尾指针
+    mov rax, rsi                ;rax外层指针
+op_loop:
+    xor ebx, ebx 
+    movsx ecx, word ptr [rax + Scores_OFFSET + 0]
+    add  ebx, ecx
+    movsx ecx, word ptr [rax + Scores_OFFSET + 2]
+    add  ebx, ecx
+    movsx ecx, word ptr [rax + Scores_OFFSET + 4]
+    add  ebx, ecx
+    movsx ecx, word ptr [rax + Scores_OFFSET + 6]
+    add  ebx, ecx
+    movsx ecx, word ptr [rax + Scores_OFFSET + 8]
+    add  ebx, ecx
+    movsx ecx, word ptr [rax + Scores_OFFSET + 10]
+    add  ebx, ecx
+    movsx ecx, word ptr [rax + Scores_OFFSET + 12]
+    add  ebx, ecx
+    movsx ecx, word ptr [rax + Scores_OFFSET + 14]
+    add  ebx, ecx
+    sar ebx,3
+    mov word ptr [rax + AVERAGE_OFFSET], bx
+    add rax, STRUCT_SIZE
+    cmp rax,rdi
+    jb op_loop
+exit:
+    pop rbx
+    pop rdi
+    pop rsi
+    ret
+AsmCountAverage ENDP
 END

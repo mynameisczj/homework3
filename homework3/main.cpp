@@ -1,7 +1,8 @@
 #include<iostream>
 #include<Windows.h>
+#include<time.h>
 #include<random>
-#define N 100000
+#define N 10000000
 #define TestNum 10
 bool Testbool[2] = {1,0};
 using namespace std;
@@ -15,7 +16,9 @@ student s[N];
 void LoadData()
 {
     FILE *fp;
+    if(Testbool[1])
     fp = fopen("homeworkdata.dat","r");
+    else fp = fopen("homeworkdata0.dat", "r");
     for (int i = 0; i < N; i++) {
         int tmp=fscanf(fp, "%s%s", s[i].name, s[i].sid);
         for (int j = 0; j < 8; j++) {
@@ -34,8 +37,8 @@ void Print(int k) {
         putchar('\n');
     }
 }
-void CountAverage() {
-    for (int i = 0; i < N; i++) {
+void CountAverage(student* s, int n) {
+    for (int i = 0; i < n; i++) {
         s[i].average = 0;
         for (int j = 0; j < 8; j++) {
             s[i].average += s[i].scores[j];
@@ -43,7 +46,20 @@ void CountAverage() {
         s[i].average >>=3;
     }
 }
-
+void QuickCountAverage(student* s, int n) {
+    for (int i = 0; i < n; i++) {
+        s[i].average = 0;
+        s[i].average += s[i].scores[0];
+        s[i].average += s[i].scores[1];
+        s[i].average += s[i].scores[2];
+        s[i].average += s[i].scores[3];
+        s[i].average += s[i].scores[4];
+        s[i].average += s[i].scores[5];
+        s[i].average += s[i].scores[6];
+        s[i].average += s[i].scores[7];
+        s[i].average >>= 3;
+    }
+}
 void  SortScores(student *s ,int n) {
     for (int i = 0; i < n; i++) {
         for (int j = i + 1; j < n; j++) {
@@ -56,40 +72,56 @@ void  SortScores(student *s ,int n) {
     }
 }
 extern "C" void AsmSortScores(student *s ,int n);
+extern "C" void AsmCountAverage(student* s, int n);
 int main()
 {
-    unsigned long long  start, finish;
+    LARGE_INTEGER start, end, freq;
+    double elapsedTime;
     LoadData();
-    start = GetTickCount64();
-    if(Testbool[0]) CountAverage();
-    finish= GetTickCount64();
-    printf("CountAverage: %lld\n", finish - start);
-    start = GetTickCount64();
+    QueryPerformanceFrequency(&freq);
+    QueryPerformanceCounter(&start);
+    if (Testbool[0]) CountAverage(s,N);
+    QueryPerformanceCounter(&end);
+    elapsedTime = (double)(end.QuadPart - start.QuadPart) / freq.QuadPart * 1000.0;
+    printf("CountAverage: %f\n", elapsedTime);
+    QueryPerformanceFrequency(&freq);
+    QueryPerformanceCounter(&start);
     if (Testbool[1]) SortScores(s, N);
-    finish = GetTickCount64();
-    printf("Sort: %lld\n", finish - start);
-    Print(min(N,TestNum));
-    printf("-----------------------------------------------\n");
-    LoadData();
-    start = GetTickCount64();
-    if (Testbool[0]) CountAverage();
-    finish = GetTickCount64();
-    printf("CountAverage: %lld\n", finish - start);
-    start = GetTickCount64();
-    if (Testbool[1]) AsmSortScores(s, N);
-    finish = GetTickCount64();
-    printf("AsmSort: %lld\n", finish - start);
+    QueryPerformanceCounter(&end);
+    elapsedTime = (double)(end.QuadPart - start.QuadPart) / freq.QuadPart * 1000.0;
+    printf("Sort: %f\n", elapsedTime);
     Print(min(N, TestNum));
     printf("-----------------------------------------------\n");
+
     LoadData();
-    start = GetTickCount64();
-    if (Testbool[0]) CountAverage();
-    finish = GetTickCount64();
-    printf("CountAverage: %lld\n", finish - start);
-    start = GetTickCount64();
+    QueryPerformanceFrequency(&freq);
+    QueryPerformanceCounter(&start);
+    if (Testbool[0]) AsmCountAverage(s,N);
+    QueryPerformanceCounter(&end);
+    elapsedTime = (double)(end.QuadPart - start.QuadPart) / freq.QuadPart * 1000.0;
+    printf("CountAverage: %f\n", elapsedTime);
+    QueryPerformanceFrequency(&freq);
+    QueryPerformanceCounter(&start);
+    if (Testbool[1]) AsmSortScores(s, N);
+    QueryPerformanceCounter(&end);
+    elapsedTime = (double)(end.QuadPart - start.QuadPart) / freq.QuadPart * 1000.0;
+    printf("AsmSort: %f\n", elapsedTime);
+    Print(min(N, TestNum));
+
+    printf("-----------------------------------------------\n");
+    LoadData();
+    QueryPerformanceFrequency(&freq);
+    QueryPerformanceCounter(&start);
+    if (Testbool[0]) QuickCountAverage(s,N);
+    QueryPerformanceCounter(&end);
+    elapsedTime = (double)(end.QuadPart - start.QuadPart) / freq.QuadPart * 1000.0;
+    printf("CountAverage: %f\n", elapsedTime);
+    QueryPerformanceFrequency(&freq);
+    QueryPerformanceCounter(&start);
     if (Testbool[1]) sort(s, s + N, [](student& x, student& y) {return x.average > y.average; });
-    finish = GetTickCount64();
-    printf("QuickSort: %lld\n", finish - start);
+    QueryPerformanceCounter(&end);
+    elapsedTime = (double)(end.QuadPart - start.QuadPart) / freq.QuadPart * 1000.0;
+    printf("QuickSort: %f\n", elapsedTime);
     Print(min(N, TestNum));
     return 0;
 }
