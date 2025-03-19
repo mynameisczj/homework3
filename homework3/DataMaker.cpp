@@ -2,7 +2,7 @@
 #include <fstream>
 #include<random>
 #define SEED 114514
-#define N 100000
+#define N 100000000
 #define _CRT_SECURE_NO_WARNINGS 1
 using namespace std;
 void RandName(FILE*fp) {
@@ -30,7 +30,7 @@ void MakeData(FILE*fp)
 int main()
 {
     FILE* fp = NULL;
-    fp = fopen("homeworkdata.dat", "w");
+    fp = fopen("homeworkdata0.dat", "w");
     MakeData(fp);
     fclose(fp);
     printf("AC");

@@ -3,6 +3,7 @@
 #include<random>
 #define N 100000
 #define TestNum 10
+bool Testbool[2] = {1,0};
 using namespace std;
 struct student {
     char  name[8];
@@ -60,33 +61,33 @@ int main()
     unsigned long long  start, finish;
     LoadData();
     start = GetTickCount64();
-    CountAverage();
+    if(Testbool[0]) CountAverage();
     finish= GetTickCount64();
     printf("CountAverage: %lld\n", finish - start);
     start = GetTickCount64();
-    SortScores(s, N);
+    if (Testbool[1]) SortScores(s, N);
     finish = GetTickCount64();
     printf("Sort: %lld\n", finish - start);
     Print(min(N,TestNum));
     printf("-----------------------------------------------\n");
     LoadData();
     start = GetTickCount64();
-    CountAverage();
+    if (Testbool[0]) CountAverage();
     finish = GetTickCount64();
     printf("CountAverage: %lld\n", finish - start);
     start = GetTickCount64();
-    AsmSortScores(s, N);
+    if (Testbool[1]) AsmSortScores(s, N);
     finish = GetTickCount64();
     printf("AsmSort: %lld\n", finish - start);
     Print(min(N, TestNum));
     printf("-----------------------------------------------\n");
     LoadData();
     start = GetTickCount64();
-    CountAverage();
+    if (Testbool[0]) CountAverage();
     finish = GetTickCount64();
     printf("CountAverage: %lld\n", finish - start);
     start = GetTickCount64();
-    sort(s, s + N, [](student& x, student& y) {return x.average > y.average; });
+    if (Testbool[1]) sort(s, s + N, [](student& x, student& y) {return x.average > y.average; });
     finish = GetTickCount64();
     printf("QuickSort: %lld\n", finish - start);
     Print(min(N, TestNum));
