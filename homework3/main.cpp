@@ -2,9 +2,9 @@
 #include<Windows.h>
 #include<time.h>
 #include<random>
-#define N 10000000
+#define N 100000
 #define TestNum 10
-bool Testbool[2] = {1,0};
+bool Testbool[2] = {1,1};
 using namespace std;
 struct student {
     char  name[8];
@@ -13,7 +13,7 @@ struct student {
     short  average;
 };
 student s[N];
-void LoadData()
+static void LoadData()
 {
     FILE *fp;
     if(Testbool[1])
@@ -27,7 +27,7 @@ void LoadData()
     }
     fclose(fp);
 }
-void Print(int k) {
+static void Print(int k) {
     for (int i = 0; i < k; i++) {
         printf("%s %s ", s[i].name, s[i].sid);
         for (int j = 0; j < 8; j++) {
@@ -37,7 +37,7 @@ void Print(int k) {
         putchar('\n');
     }
 }
-void CountAverage(student* s, int n) {
+static void CountAverage(student* s, int n) {
     for (int i = 0; i < n; i++) {
         s[i].average = 0;
         for (int j = 0; j < 8; j++) {
@@ -46,10 +46,9 @@ void CountAverage(student* s, int n) {
         s[i].average >>=3;
     }
 }
-void QuickCountAverage(student* s, int n) {
+static void QuickCountAverage(student* s, int n) {
     for (int i = 0; i < n; i++) {
-        s[i].average = 0;
-        s[i].average += s[i].scores[0];
+        s[i].average = s[i].scores[0];
         s[i].average += s[i].scores[1];
         s[i].average += s[i].scores[2];
         s[i].average += s[i].scores[3];
@@ -60,7 +59,7 @@ void QuickCountAverage(student* s, int n) {
         s[i].average >>= 3;
     }
 }
-void  SortScores(student *s ,int n) {
+static void  SortScores(student *s ,int n) {
     for (int i = 0; i < n; i++) {
         for (int j = i + 1; j < n; j++) {
             if (s[i].average < s[j].average) {
@@ -92,7 +91,6 @@ int main()
     printf("Sort: %f\n", elapsedTime);
     Print(min(N, TestNum));
     printf("-----------------------------------------------\n");
-
     LoadData();
     QueryPerformanceFrequency(&freq);
     QueryPerformanceCounter(&start);
@@ -107,7 +105,6 @@ int main()
     elapsedTime = (double)(end.QuadPart - start.QuadPart) / freq.QuadPart * 1000.0;
     printf("AsmSort: %f\n", elapsedTime);
     Print(min(N, TestNum));
-
     printf("-----------------------------------------------\n");
     LoadData();
     QueryPerformanceFrequency(&freq);
