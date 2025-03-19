@@ -69,29 +69,18 @@ AsmCountAverage PROC
     mov rsi, rcx                ;头指针     
     imul rdx, STRUCT_SIZE
     lea rdi, [rsi + rdx]        ;尾指针
-    mov rax, rsi                ;rax外层指针
 op_loop:
-    xor ebx, ebx 
-    movsx ecx, word ptr [rax + Scores_OFFSET + 0]
-    add  ebx, ecx
-    movsx ecx, word ptr [rax + Scores_OFFSET + 2]
-    add  ebx, ecx
-    movsx ecx, word ptr [rax + Scores_OFFSET + 4]
-    add  ebx, ecx
-    movsx ecx, word ptr [rax + Scores_OFFSET + 6]
-    add  ebx, ecx
-    movsx ecx, word ptr [rax + Scores_OFFSET + 8]
-    add  ebx, ecx
-    movsx ecx, word ptr [rax + Scores_OFFSET + 10]
-    add  ebx, ecx
-    movsx ecx, word ptr [rax + Scores_OFFSET + 12]
-    add  ebx, ecx
-    movsx ecx, word ptr [rax + Scores_OFFSET + 14]
-    add  ebx, ecx
-    sar ebx,3
-    mov word ptr [rax + AVERAGE_OFFSET], bx
-    add rax, STRUCT_SIZE
-    cmp rax,rdi
+    movdqu xmm0, [rsi + Scores_OFFSET]
+    pmovsxwd xmm1, xmm0           
+    psrldq  xmm0, 8               
+    pmovsxwd xmm0, xmm0           
+    paddd   xmm1, xmm0            
+    phaddd  xmm1, xmm1
+    phaddd  xmm1, xmm1
+    psrad   xmm1, 3
+    pextrw  word ptr [rsi + AVERAGE_OFFSET], xmm1, 0
+    add     rsi, STRUCT_SIZE
+    cmp     rsi, rdi
     jb op_loop
 exit:
     pop rbx
