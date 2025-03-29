@@ -72,6 +72,18 @@ static void  SortScores(student *s ,int n) {
 }
 extern "C" void AsmSortScores(student *s ,int n);
 extern "C" void AsmCountAverage(student* s, int n);
+
+pair<short, int> temp[N]; 
+static void Print1(int k) {
+    for (int i = 0; i < k; i++) {
+        printf("%s %s ", s[temp[i].second].name, s[temp[i].second].sid);
+        for (int j = 0; j < 8; j++) {
+            printf("%d ", s[temp[i].second].scores[j]);
+        }
+        printf("Average: %d", s[temp[i].second].average);
+        putchar('\n');
+    }
+}
 int main()
 {
     LARGE_INTEGER start, end, freq;
@@ -97,7 +109,7 @@ int main()
     if (Testbool[0]) AsmCountAverage(s,N);
     QueryPerformanceCounter(&end);
     elapsedTime = (double)(end.QuadPart - start.QuadPart) / freq.QuadPart * 1000.0;
-    printf("CountAverage: %f\n", elapsedTime);
+    printf("AsmCountAverage: %f\n", elapsedTime);
     QueryPerformanceFrequency(&freq);
     QueryPerformanceCounter(&start);
     if (Testbool[1]) AsmSortScores(s, N);
@@ -120,5 +132,23 @@ int main()
     elapsedTime = (double)(end.QuadPart - start.QuadPart) / freq.QuadPart * 1000.0;
     printf("QuickSort: %f\n", elapsedTime);
     Print(min(N, TestNum));
+    printf("-----------------------------------------------\n");
+    LoadData();
+    QueryPerformanceFrequency(&freq);
+    QueryPerformanceCounter(&start);
+    if (Testbool[0]) QuickCountAverage(s, N);
+    QueryPerformanceCounter(&end);
+    elapsedTime = (double)(end.QuadPart - start.QuadPart) / freq.QuadPart * 1000.0;
+    printf("CountAverage: %f\n", elapsedTime);
+    QueryPerformanceFrequency(&freq);
+    QueryPerformanceCounter(&start);
+    if (Testbool[1]) {
+        for (int i = 0; i < N; i++)temp[i].first = s[i].average, temp[i].second = i;
+        sort(temp, temp + N, [](pair<short,int>& x, pair<short,int>& y) {return x.first > y.first; });
+    }
+    QueryPerformanceCounter(&end);
+    elapsedTime = (double)(end.QuadPart - start.QuadPart) / freq.QuadPart * 1000.0;
+    printf("MyQuickSort: %f\n", elapsedTime);
+    Print1(min(N, TestNum));
     return 0;
 }
